@@ -110,6 +110,13 @@ var NexisState = (function () {
     }
   }
 
+  function markRecheckDone() {
+    if (!state.user || state.user.recheckCompleted) return;
+    state.user.recheckCompleted = true;
+    persist();
+    if (syncing()) bg(dbUpdateProfileStats(state.user.id, { recheck_completed: true, recheck_completed_at: nowISO() }), 'recheck');
+  }
+
   function awardBadge(badgeId) {
     if (state.badges[badgeId]) return false;
     state.badges[badgeId] = { earnedAt: nowISO() };
@@ -315,6 +322,7 @@ var NexisState = (function () {
     isLoggedIn: isLoggedIn,
     touchStreak: touchStreak,
     addXP: addXP,
+    markRecheckDone: markRecheckDone,
     awardBadge: awardBadge,
     hasBadge: hasBadge,
     courseProgress: courseProgress,

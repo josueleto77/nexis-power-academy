@@ -27,8 +27,13 @@ create table if not exists public.profiles (
   training_minutes integer not null default 0,
   streak_count integer not null default 0,
   last_active date,
+  recheck_completed boolean not null default false,
+  recheck_completed_at timestamptz,
   created_at timestamptz not null default now()
 );
+
+alter table public.profiles add column if not exists recheck_completed boolean not null default false;
+alter table public.profiles add column if not exists recheck_completed_at timestamptz;
 
 alter table public.teams drop constraint if exists teams_manager_fk;
 alter table public.teams

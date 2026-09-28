@@ -174,6 +174,11 @@ function metricsSummary() {
   };
 }
 
+function completeRecheckOnboarding() {
+  NexisState.markRecheckDone();
+  renderShell('dashboard', renderDashboardPage());
+}
+
 function renderDashboardPage() {
   var user = NexisState.get().user;
   var firstName = (user.name || 'Rep').split(' ')[0];
@@ -193,6 +198,16 @@ function renderDashboardPage() {
         '<button class="btn btn-outline" style="border-color:rgba(255,255,255,.3);color:#fff;" onclick="navigate(\'certifications\')">View Certifications</button>' +
       '</div>' +
     '</div>' +
+
+    (user.recheckCompleted ? '' :
+      '<div class="callout mt-24"><h4>Onboarding: Identity Verification</h4>' +
+        '<p>Before you get started, complete your identity/reference verification with Recheck — this is a required onboarding step.</p>' +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">' +
+          '<a class="btn btn-dark btn-sm" href="https://recheck.co/signin/" target="_blank" rel="noopener">Open Recheck</a>' +
+          '<button class="btn btn-outline btn-sm" onclick="completeRecheckOnboarding()">I already registered</button>' +
+        '</div>' +
+      '</div>'
+    ) +
 
     '<div class="section-head mt-32"><div><span class="eyebrow">Training Progress</span><h2>Your certification path</h2></div></div>' +
     '<div class="grid grid-3">' +

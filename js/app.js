@@ -2,7 +2,7 @@
    NEXIS POWER ACADEMY — App shell, router, and shared helpers
    ============================================================ */
 
-window.NEXIS_BUILD = '20260918d';
+window.NEXIS_BUILD = '20260928a';
 console.log('[Nexis Academy] build ' + window.NEXIS_BUILD);
 
 var COURSES = [window.SOLAR_COURSE, window.HVAC_COURSE, window.ENERGY_ADVISOR_COURSE];
@@ -259,7 +259,7 @@ function proceedPostAuth(session) {
   dbFetchMyProfile(session.user.id).then(function (r) {
     if (!r.data) { showNotInvitedGate(session); return; }
     var p = r.data;
-    NexisState.setUser({ id: p.id, name: p.name, email: p.email, role: p.role, initials: initialsOf(p.name) });
+    NexisState.setUser({ id: p.id, name: p.name, email: p.email, role: p.role, initials: initialsOf(p.name), recheckCompleted: !!p.recheck_completed });
     NexisState.hydrateFromSupabase(p.id).then(router, router);
   }, function () { showAuthGate('signin'); });
 }

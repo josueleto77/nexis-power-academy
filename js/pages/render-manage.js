@@ -78,7 +78,7 @@ function realMemberFromProfile(profile, full) {
     solarPct: courseLessonPct(SOLAR_COURSE, full.lessons), hvacPct: courseLessonPct(HVAC_COURSE, full.lessons),
     solarCert: solarCert, hvacCert: hvacCert, advisorStatus: advisorStatus,
     quizAvg: quizAvg, examAvg: examAvg, trainingHours: Math.round((totalMinutes / 60) * 10) / 10,
-    lastActivity: lastActivity, weakTopics: weakTopics,
+    lastActivity: lastActivity, weakTopics: weakTopics, recheckCompleted: !!profile.recheck_completed,
     _lessons: full.lessons, _examsByCourse: examsByCourse
   };
 }
@@ -108,6 +108,9 @@ function certCellForMember(m, track) {
   var p = track === 'solar' ? m.solarPct : m.hvacPct;
   if (done) return '<span class="pill pill-green">✅ Certified</span>';
   return '<span class="pill pill-blue">' + p + '%</span>';
+}
+function recheckCell(done) {
+  return done ? '<span class="pill pill-green">✅ Verified</span>' : '<span class="pill pill-gray">Pending</span>';
 }
 function loadingCard(label) { return '<div class="card text-center" style="padding:50px;"><p class="muted mb-0">' + escapeHtml(label || 'Loading…') + '</p></div>'; }
 function renderManagerDashboardPage() {
@@ -335,10 +338,11 @@ function renderAdminUsers() {
 
   var team = getTeamData(function () { renderShell('admin/users', renderAdminUsers()); });
   var tableHtml = !team ? loadingCard('Loading users…') : (
-    '<div class="card mt-16"><table class="lesson-table"><thead><tr><th>Name</th><th>Role</th><th>Solar</th><th>HVAC</th><th>Advisor</th><th></th></tr></thead><tbody>' +
+    '<div class="card mt-16"><table class="lesson-table"><thead><tr><th>Name</th><th>Role</th><th>Solar</th><th>HVAC</th><th>Advisor</th><th>Recheck</th><th></th></tr></thead><tbody>' +
       '<tr><td style="font-weight:700;">' + escapeHtml(me.name) + ' (you)</td><td>' + escapeHtml(me.role) + '</td>' +
-      '<td>' + CERT_STATUS_LABEL[NexisState.certStatus(SOLAR_COURSE)] + '</td><td>' + CERT_STATUS_LABEL[NexisState.certStatus(HVAC_COURSE)] + '</td><td>' + CERT_STATUS_LABEL[NexisState.certStatus(ENERGY_ADVISOR_COURSE)] + '</td><td></td></tr>' +
-      team.map(function (m) { return '<tr style="cursor:pointer;" onclick="navigate(\'manager/rep/' + m.id + '\')"><td style="font-weight:700;">' + escapeHtml(m.name) + '</td><td>' + escapeHtml(m.role) + '</td><td>' + certCellForMember(m, 'solar') + '</td><td>' + certCellForMember(m, 'hvac') + '</td><td>' + certCellForMember(m, 'advisor') + '</td><td class="small muted">View training →</td></tr>'; }).join('') +
+      '<td>' + CERT_STATUS_LABEL[NexisState.certStatus(SOLAR_COURSE)] + '</td><td>' + CERT_STATUS_LABEL[NexisState.certStatus(HVAC_COURSE)] + '</td><td>' + CERT_STATUS_LABEL[NexisState.certStatus(ENERGY_ADVISOR_COURSE)] + '</td>' +
+      '<td>' + recheckCell(NexisState.get().user.recheckCompleted) + '</td><td></td></tr>' +
+      team.map(function (m) { return '<tr style="cursor:pointer;" onclick="navigate(\'manager/rep/' + m.id + '\')"><td style="font-weight:700;">' + escapeHtml(m.name) + '</td><td>' + escapeHtml(m.role) + '</td><td>' + certCellForMember(m, 'solar') + '</td><td>' + certCellForMember(m, 'hvac') + '</td><td>' + certCellForMember(m, 'advisor') + '</td><td>' + recheckCell(m.recheckCompleted) + '</td><td class="small muted">View training →</td></tr>'; }).join('') +
     '</tbody></table></div>'
   );
 
