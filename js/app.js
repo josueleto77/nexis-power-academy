@@ -2,7 +2,7 @@
    NEXIS POWER ACADEMY — App shell, router, and shared helpers
    ============================================================ */
 
-window.NEXIS_BUILD = '20260928a';
+window.NEXIS_BUILD = '20260928b';
 console.log('[Nexis Academy] build ' + window.NEXIS_BUILD);
 
 var COURSES = [window.SOLAR_COURSE, window.HVAC_COURSE, window.ENERGY_ADVISOR_COURSE];
@@ -73,7 +73,8 @@ function renderNav(activeKey) {
   var user = NexisState.get().user;
   if (!user) return '';
   var role = user.role || 'rep';
-  var items = NAV_ITEMS_REP.slice();
+  var items = user.recheckCompleted ? NAV_ITEMS_REP.slice() :
+    NAV_ITEMS_REP.filter(function (it) { return it[0] === 'dashboard' || it[0] === 'profile'; });
   if (role === 'manager' || role === 'admin') items = items.concat(NAV_ITEMS_MANAGER_EXTRA);
   var showAdminMenu = role === 'admin';
 
@@ -147,6 +148,11 @@ function router() {
 
   var page = parts[0] || 'dashboard';
   if (page === '' || page === 'login') page = 'dashboard';
+
+  var user = NexisState.get().user;
+  var onboardingLocked = user && !user.recheckCompleted;
+  var TRAINING_LOCKED_PAGES = ['my-training', 'certifications', 'badges', 'leaderboard', 'resources', 'course', 'exam', 'certificate', 'practical-result', 'practice', 'coach'];
+  if (onboardingLocked && TRAINING_LOCKED_PAGES.indexOf(page) !== -1) { navigate('dashboard'); return; }
 
   if (page === 'dashboard') return renderShell('dashboard', renderDashboardPage());
   if (page === 'my-training') return renderShell('my-training', renderMyTrainingPage());

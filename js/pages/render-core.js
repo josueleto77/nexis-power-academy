@@ -188,6 +188,23 @@ function renderDashboardPage() {
   var hvacPct = NexisState.courseProgressPercent(hvac);
   var advisorUnlocked = NexisState.isEnergyAdvisorUnlocked();
 
+  if (!user.recheckCompleted) {
+    return (
+      '<div class="hero-dark">' +
+        '<span class="eyebrow" style="color:#FFCB70;">Nexis Power Academy</span>' +
+        '<h1 style="color:#fff;">Welcome, ' + escapeHtml(firstName) + '</h1>' +
+        '<p style="max-width:520px;">One last onboarding step before your training unlocks.</p>' +
+      '</div>' +
+      '<div class="callout mt-24"><h4>Onboarding: Identity Verification</h4>' +
+        '<p>Your training is locked until you complete identity/reference verification with Recheck — this is a required onboarding step.</p>' +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">' +
+          '<a class="btn btn-dark btn-sm" href="https://recheck.co/signin/" target="_blank" rel="noopener">Open Recheck</a>' +
+          '<button class="btn btn-outline btn-sm" onclick="completeRecheckOnboarding()">I already registered</button>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
   return (
     '<div class="hero-dark">' +
       '<span class="eyebrow" style="color:#FFCB70;">Nexis Power Academy</span>' +
@@ -198,16 +215,6 @@ function renderDashboardPage() {
         '<button class="btn btn-outline" style="border-color:rgba(255,255,255,.3);color:#fff;" onclick="navigate(\'certifications\')">View Certifications</button>' +
       '</div>' +
     '</div>' +
-
-    (user.recheckCompleted ? '' :
-      '<div class="callout mt-24"><h4>Onboarding: Identity Verification</h4>' +
-        '<p>Before you get started, complete your identity/reference verification with Recheck — this is a required onboarding step.</p>' +
-        '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">' +
-          '<a class="btn btn-dark btn-sm" href="https://recheck.co/signin/" target="_blank" rel="noopener">Open Recheck</a>' +
-          '<button class="btn btn-outline btn-sm" onclick="completeRecheckOnboarding()">I already registered</button>' +
-        '</div>' +
-      '</div>'
-    ) +
 
     '<div class="section-head mt-32"><div><span class="eyebrow">Training Progress</span><h2>Your certification path</h2></div></div>' +
     '<div class="grid grid-3">' +
